@@ -12,5 +12,8 @@
   "dependencies": {
     "@thi.ng/hdom": "latest",
     "@thi.ng/hiccup-css": "latest"
+  },
+  "devDependencies": {
+    "tachyons": "^4.10.0"
   }
 }
