@@ -1,4 +1,5 @@
 import { start, renderOnce } from '@thi.ng/hdom'
+import { css, injectStyleSheet } from "@thi.ng/hiccup-css";
 
 // stateless component w/ params
 // the first arg is an auto-injected context object
@@ -16,6 +17,16 @@ const app = () => {
   // root component is just a static array
   return ['div#app', [greeter, 'world'], counter(), counter(100)]
 }
+
+injectStyleSheet(
+  css(
+    [
+        ["#app", { background: "white" }, border, red],
+        ["button", { background: "yellow", color: "black" }, border]
+    ],
+    { format: css.PRETTY }
+);
+);
 
 // start RAF update & diff loop
 start(app(), { root: document.body })
