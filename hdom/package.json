@@ -10,6 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@thi.ng/hdom": "latest",
+    "@thi.ng/hdom": "latest"
   }
 }
