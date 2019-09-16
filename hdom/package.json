@@ -11,6 +11,5 @@
   "license": "ISC",
   "dependencies": {
     "@thi.ng/hdom": "latest",
-    "@thi.ng/hiccup-css": "latest"
   }
 }
