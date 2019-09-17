@@ -71,7 +71,7 @@ injectStyleSheet(
         br('10px'),
         bc('white'),
         crs,
-        f('Rubik', 300),
+        f('System UI', 300),
       ],
       // use a media query:
       at_media({ 'screen': true, 'min-width': rem(25) }, [
@@ -81,13 +81,13 @@ injectStyleSheet(
           at_media({ 'min-width': '35rem' }, [
             '.btn',
             { padding: rem(1) },
-            f('Rubik', 500, 'italic'),
+            f('System UI', 500, 'italic'),
           ]),
         ],
       ]),
       // spread in the custom media query adapter we created above:
       ...bp_4_FontSizer('15px', '25px', '35px', rem(5))('.title'),
-      ['.title', f('Rubik', 500, 'italic'), { color: 'white' }],
+      ['.title', f('System UI', 500, 'italic'), { color: 'white' }],
     ],
 
     // second argument is an optional configuration
