@@ -10,8 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@thi.ng/hdom": "latest",
-    "@thi.ng/hiccup-css": "latest"
+    "@thi.ng/atom": "^3.0.4",
+    "@thi.ng/hdom": "^8.0.4",
+    "@thi.ng/hiccup-css": "^1.1.4"
   },
   "devDependencies": {
     "tachyons": "^4.10.0"
