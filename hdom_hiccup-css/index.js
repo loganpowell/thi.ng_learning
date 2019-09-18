@@ -70,7 +70,7 @@ injectStyleSheet(
       [
         '.btn',
         {
-          'background': bloodOrange,
+          'background': BLOODORANGE,
           'color': 'white',
           'margin': '0 0 20px 0',
           'padding': rem(0.5),
