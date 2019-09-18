@@ -1,12 +1,14 @@
+import './normalize.css'
+import './index.css'
 import { start, renderOnce } from '@thi.ng/hdom'
 import { css, injectStyleSheet, PRETTY, rem, at_media, percent } from '@thi.ng/hiccup-css'
-import 'typeface-rubik'
 
 const greeter = (_, name) => ['h1.title' + scope, 'hello ', name]
 
 const counter = (i = 0) => {
   return () => ['button.btn' + scope, { onclick: () => i++ }, `clicks: ${i}`]
 }
+
 /**
  * You can use the full power of javascript to define your styles
  * Let's explore the benefits of treating everything as data
