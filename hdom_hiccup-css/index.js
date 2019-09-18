@@ -1,48 +1,53 @@
-import './normalize.css'
-import './index.css'
-import { start, renderOnce } from '@thi.ng/hdom'
-import { css, injectStyleSheet, PRETTY, rem, at_media, percent } from '@thi.ng/hiccup-css'
+import './normalize.css' // for codesandbox
+import './index.css' // for codesandbox
 
-const greeter = (_, name) => ['h1.title' + scope, 'hello ', name]
-
-const counter = (i = 0) => {
-  return () => ['button.btn' + scope, { onclick: () => i++ }, `clicks: ${i}`]
-}
+import { start } from '@thi.ng/hdom'
+import { css, injectStyleSheet, PRETTY, rem, at_media } from '@thi.ng/hiccup-css'
 
 /**
  * You can use the full power of javascript to define your styles
  * Let's explore the benefits of treating everything as data
  **/
 
-// We'll start by defining a scope for our component
+// We'll start by defining a globally unique scope for our component:
+const scope = '_jumbotron_clicker'
 
-const scope = '_globally_specific_component_name'
-
-/**
- * NOTE: scope names can only be appended to class names,
- * not ids or elements, so we'll use a class `.component` qualifier here
+/** FUNCTIONAL COMPONENTS
+ * NOTE: `scope` names can only be appended to class names,
+ * not ids or elements, so we terminate our element tag with class names
+ * and append our css named scope thereafter
  **/
-const component = () => {
-  // append our css name scoping
-  return ['div.component' + scope, [greeter, 'thi.ng'], counter()]
-}
+const greeter = (_, name) => ['h1#my_id.greeter' + scope, 'hello ', name]
+const counter = (i = 0) => () => ['button.counter' + scope, { onclick: () => i++ }, `clicks: ${i}`]
+const jumbotron = () => ['div.jumbotron' + scope, [greeter, 'thi.ng'], counter()]
 
-// create some re-usable css snippets
-const bc = (color = 'black') => ({
-  // a simple border factory
-  border: `1px solid ${color}`,
-  outline: 'none',
+// create some utilities (we'll move these into a util directory later)
+
+// factories
+const border = (color = 'black', radius = '0px', type = 'solid', thickness = '1px') => ({
+  'border-radius': radius,
+  'border': `${thickness} ${type} ${color}`,
+  'outline': 'none',
 })
-const BLOODORANGE = '#DB5461' // use a constant
-const crs = { cursor: 'pointer' } // create a shortcode
-// a function for font definitions
-const f = (font = 'system-ui', weight = 'normal', style = 'normal') => ({
+const font = (font = 'system-ui', weight = 'normal', style = 'normal', decoration = 'none') => ({
   'font-family': font,
   'font-weight': weight,
   'font-style': style,
+  'text-decoration': decoration,
 })
-const p = size => ({ padding: size })
-const br = radius => ({ 'border-radius': radius })
+// scales
+const orangeScale = ['#DB5461', '#FF6D7C', '#FF939E']
+// shortcodes
+const crs = { cursor: 'pointer' }
+// use math to create variants
+const px = xsRem => ({
+  xs: { padding: xsRem },
+  sm: { padding: rem(xsRem * 1.5) },
+  md: { padding: rem(xsRem * 3) },
+  lg: { padding: rem(xsRem * 5) },
+  xl: { padding: rem(xsRem * 8) },
+})
+const padding = px(0.5)
 
 // using a `styled-system` inspired media query function (HOF for adaptations)
 const styleSystem = (...breakPoints) => selector => (...sizes) => className =>
@@ -51,64 +56,63 @@ const styleSystem = (...breakPoints) => selector => (...sizes) => className =>
   )
 
 // store your breakpoints once and export them if so desired:
-export const breakPointsOn = styleSystem(rem(10), rem(15), rem(20), rem(30))
+export const breakPointsOn = styleSystem('0px', '599px', '959px', '1279px', '1919px')
 
-// let's create a custom media query adapter using the breakpoints above:
+// Creating styles ===================
+
+// use media queries:
+const jumboLighten = at_media({ 'screen': true, 'min-width': '1000px' }, [
+  ['.jumbotron', { background: orangeScale[1] }],
+])
+// nested media queries are supported:
+const nestedMediaQueries = at_media({ 'screen': true, 'min-width': '800px' }, [
+  ['.counter', padding.md, { 'font-size': rem(2) }],
+  [at_media({ 'min-width': '1000px' }, ['.counter', { 'font-size': rem(2.5) }])],
+])
+
+// adapter for font-sizes
 const responsiveFonts = breakPointsOn('font-size')
 
-// pushes our css into <head> of document:
-injectStyleSheet(
-  css(
-    // first arg to `css` is an array of 'rules' for styling
-    [
-      /** styles are applied in the order they are included
-       * in the rules array. Following css rules, when multiple
-       * declarations have equal specificity, the last declaration
-       * found in the CSS is applied to the element.
-       * **/
-      // the first member of a rule is the identifier of the element
-      // remaining members are concatenated into a single css string
-      ['.component', { background: BLOODORANGE }, bc('white'), p('0 0 0 20px')],
-      // mix, match and compose objects, functions, and string definitions
-      [
-        '.btn',
-        {
-          'background': BLOODORANGE,
-          'color': 'white',
-          'margin': '0 0 20px 0',
-          'padding': rem(0.5),
-          'font-size': rem(1),
-        },
-        br('10px'),
-        bc('white'),
-        crs,
-        f('Rubik', 300),
-      ],
-      // use a media query:
-      at_media({ 'screen': true, 'min-width': rem(25) }, [
-        ['.btn', { 'padding': rem(1), 'font-size': rem(2) }],
-        // nested media queries are supported:
-        [
-          at_media({ 'min-width': '35rem' }, [
-            '.btn',
-            { padding: rem(1) },
-            f('Rubik', 500, 'italic'),
-          ]),
-        ],
-      ]),
-      // spread in the custom media query adapter we created above:
-      ...responsiveFonts('15px', '25px', '35px', rem(5))('.title'),
-      ['.title', f('Rubik', 800, 'italic'), { color: 'white' }],
-    ],
+// the first member of a css rule is the identifier of the element
+// remaining members are concatenated into a single css definition
+const buttonStyles = [
+  '.counter',
+  {
+    'background': orangeScale[1],
+    'color': 'white',
+    'font-size': rem(1.5),
+  },
+  padding.sm,
+  font('Rubik', 500),
+  border('white', '5px'),
+  crs,
+]
 
-    // second argument is an optional configuration
-    /** `format: COMPACT` (default)
-     *  PRETTY format is helpful during development to inspect the
-     * <head> css for debugging
-     **/
-
-    { format: PRETTY, scope } // append our scope name to these rules
-  )
+/** The `css` function
+ * styles are applied in the order they are included
+ * in the rules array. Following css rules, when multiple
+ * declarations have equal specificity, the last declaration
+ * found in the CSS is applied to the element.
+ *
+ * @param {Array} rules An array of css rules
+ * @param {Object} options An optional configuration
+ *        format  = Formatting for the css (default: COMPACT)
+ *        scope = A name to append to the css classes herein
+ * **/
+const styles = css(
+  [
+    ['.jumbotron', { background: orangeScale[0] }, border('white'), padding.lg],
+    jumboLighten,
+    buttonStyles,
+    nestedMediaQueries,
+    ...responsiveFonts(rem(3), rem(4), rem(5), rem(8))('.greeter'),
+    ['.greeter', font('Rubik', 800, 'italic'), { color: 'white' }],
+  ],
+  { format: PRETTY, scope: scope }
 )
 
-start(component(), { root: document.body })
+// pushes our css into <head> of document:
+injectStyleSheet(styles)
+
+// start RAF loop with component to mount and destination
+start(jumbotron(), { root: document.body })

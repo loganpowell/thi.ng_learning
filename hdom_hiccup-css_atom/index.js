@@ -1,65 +1,76 @@
-import { start, renderOnce } from '@thi.ng/hdom'
-import { css, injectStyleSheet, PRETTY, rem, at_media, percent } from '@thi.ng/hiccup-css'
+import './normalize.css' // for codesandbox
+import './index.css' // for codesandbox
 
-const greeter = (_, name) => ['h1.title' + scope, 'hello ', name]
+// import our utilities
+import { border, font, orangeScale, crs, padding, breakPointsOn } from './utils/css'
+import { greeter, counter } from './components'
 
-const counter = (i = 0) => {
-  return () => ['button.btn' + scope, { onclick: () => i++ }, `clicks: ${i}`]
-}
+import { start } from '@thi.ng/hdom'
+import { css, injectStyleSheet, PRETTY, rem, at_media } from '@thi.ng/hiccup-css'
+import { isObject, isString } from '@thi.ng/checks'
+import { Atom, Cursor, History } from '@thi.ng/atom'
 
-const scope = '_globally_specific_component_name'
+const SCOPE = '_jumbotron_clicker'
 
-const app = () => {
-  return ['div.app' + scope, [greeter, 'thi.ng'], counter()]
-}
+// create an immutable state container and record it
+const atom = new History(new Atom({ count: 0 }))
 
-// color inspiration: https://coolors.co/fafafa-8aa29e-5d737e-e3f2fd-db5461
-const bc = color => ({
-  border: `1px solid ${color}`,
-  outline: 'none',
-})
-const bloodOrange = '#DB5461'
-const crs = { cursor: 'pointer' }
-const f = (font, weight, style) => ({
-  'font-family': font,
-  'font-weight': weight,
-  'font-style': style,
-})
-const p = size => ({ padding: size })
-const br = radius => ({ 'border-radius': radius })
+// create a cursor to the count for read/write access
+const cursor = new Cursor(atom, 'count')
+// let's log our changes to the atom:
+cursor.addWatch('watcher says', (id, prev, curr) => console.log(`${id}: ${prev} -> ${curr}`))
+// create a read-only derived view
+const view = atom.addView('count', x => x / 4)
+/**
+ * the atom's value can be obtained via deref(),
+ * replaced via reset()
+ * and updated using swap()
+ **/
+const inc = (old, int) => old + int
 
-const styleSystem = (...breakPoints) => selector => (...sizes) => className =>
-  breakPoints.map((bkp, idx) =>
-    at_media({ 'screen': true, 'min-width': bkp }, [className, { [selector]: sizes[idx] }])
-  )
+// Let's use swap; this is the same as: atom.reset(inc(a.deref(), 1))
+const incState = () => cursor.swap(inc, 1)
+// props are passed in via the second element in an hdom array
+const jumbotron = () => [
+  'div',
+  { class: 'jumbotron' + SCOPE },
+  [greeter, { class: 'greeter' + SCOPE, state: view }, 'thi.ng'],
+  // let's add a new click handler that updates our atom:
+  [counter(), { class: 'counter' + SCOPE, onclick: incState, state: cursor }, 'clicks: '],
+  ['button', { class: 'counter' + SCOPE, onclick: () => atom.reset({ count: 0 }) }, 'reset'],
+  ['button', { class: 'counter' + SCOPE, onclick: () => atom.undo() }, 'undo'],
+]
 
-export const pointBreaker = styleSystem(rem(10), rem(15), rem(20), rem(30))
+const responsiveFonts = breakPointsOn('font-size')
+const responsivePadding = breakPointsOn('padding')
 
-const bp_4_FontSizer = pointBreaker('font-size')
+const buttonStyles = [
+  '.counter',
+  {
+    'background': orangeScale[1],
+    'color': 'white',
+    'font-size': rem(1.5),
+    'margin': '15px 15px 0 0',
+  },
+  font('Rubik', 500),
+  border('white', '5px'),
+  crs,
+]
 
-injectStyleSheet(
-  css(
-    [
-      ['.app', { background: bloodOrange }, bc('white'), p('0 0 0 20px')],
-      [
-        '.btn',
-        {
-          'background': bloodOrange,
-          'color': 'white',
-          'margin': '0 0 20px 0',
-          'padding': rem(0.5),
-          'font-size': rem(1),
-        },
-        br('10px'),
-        bc('white'),
-        crs,
-        f('Rubik', 300),
-      ],
-      ...bp_4_FontSizer('15px', '25px', '35px', rem(5))('.title'),
-      ['.title', f('Rubik', 500, 'italic'), { color: 'white' }],
-    ],
-    { format: PRETTY, scope }
-  )
+const styles = css(
+  [
+    ['.jumbotron', { background: orangeScale[0] }, border('white'), padding.lg],
+    buttonStyles,
+    ...responsivePadding(padding.sm, padding.sm, padding.md)('.counter'),
+    ...responsiveFonts(rem(1), rem(1.5), rem(2), rem(3))('.counter'),
+    ...responsiveFonts(rem(3), rem(4), rem(5), rem(8))('.greeter'),
+    ['.greeter', font('Rubik', 800, 'italic'), { color: 'white' }],
+  ],
+  { format: PRETTY, scope: SCOPE }
 )
 
-start(app(), { root: document.body })
+// pushes our css into <head> of document:
+injectStyleSheet(styles)
+
+// start RAF loop with component to mount and destination
+start(jumbotron(), { root: document.body })

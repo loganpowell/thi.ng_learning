@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@thi.ng/atom": "^3.0.4",
+    "@thi.ng/bench": "^1.0.9",
     "@thi.ng/hdom": "^8.0.4",
     "@thi.ng/hiccup-css": "^1.1.4"
   },
