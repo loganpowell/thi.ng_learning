@@ -8,7 +8,7 @@ const greeter = (_, name) => ['h1.title', 'hello ', name]
 // component w/ local state via H.O.F.
 const counter = (i = 0) => () => ['button', { onclick: () => i++ }, `clicks: ${i}`]
 // root component is just a static array
-const app = () => ['div#app', [greeter, 'world'], counter(), counter(100)]
+const app = () => ['div#app', [greeter, 'world'], counter()]
 
 // start RAF update & diff loop
 start(app(), { root: document.body })
