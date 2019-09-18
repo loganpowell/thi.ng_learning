@@ -12,7 +12,8 @@
   "dependencies": {
     "@thi.ng/atom": "^3.0.4",
     "@thi.ng/hdom": "^8.0.4",
-    "@thi.ng/hiccup-css": "^1.1.4"
+    "@thi.ng/hiccup-css": "^1.1.4",
+    "typeface-rubik": "0.0.72"
   },
   "devDependencies": {
     "tachyons": "^4.10.0"

@@ -1,5 +1,6 @@
 import { start, renderOnce } from '@thi.ng/hdom'
 import { css, injectStyleSheet, PRETTY, rem, at_media, percent } from '@thi.ng/hiccup-css'
+import Rubik from 'typeface-rubik'
 
 const greeter = (_, name) => ['h1.title' + scope, 'hello ', name]
 
