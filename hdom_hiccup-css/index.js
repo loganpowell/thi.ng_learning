@@ -6,26 +6,34 @@ const greeter = (_, name) => ['h1.title' + scope, 'hello ', name]
 const counter = (i = 0) => {
   return () => ['button.btn' + scope, { onclick: () => i++ }, `clicks: ${i}`]
 }
+/**
+ * You can use the full power of javascript to define your styles
+ * Let's explore the benefits of treating everything as data
+ **/
 
-// (0) scope for component-specific styles
+// We'll start by defining a scope for our component
+
 const scope = '_globally_specific_component_name'
 
 /**
  * NOTE: scope names can only be appended to class names,
- * not ids or elements, so we'll use a class `.app` qualifier here
+ * not ids or elements, so we'll use a class `.component` qualifier here
  **/
-const app = () => {
-  return ['div.app' + scope, [greeter, 'thi.ng'], counter()]
+const component = () => {
+  // append our css name scoping
+  return ['div.component' + scope, [greeter, 'thi.ng'], counter()]
 }
 
-// let's create some re-usable css snippets
-const bc = color => ({
+// create some re-usable css snippets
+const bc = (color = 'black') => ({
+  // a simple border factory
   border: `1px solid ${color}`,
   outline: 'none',
 })
-const bloodOrange = '#DB5461'
-const crs = { cursor: 'pointer' }
-const f = (font, weight, style) => ({
+const BLOODORANGE = '#DB5461' // use a constant
+const crs = { cursor: 'pointer' } // create a shortcode
+// a function for font definitions
+const f = (font = 'system-ui', weight = 'normal', style = 'normal') => ({
   'font-family': font,
   'font-weight': weight,
   'font-style': style,
@@ -40,10 +48,10 @@ const styleSystem = (...breakPoints) => selector => (...sizes) => className =>
   )
 
 // store your breakpoints once and export them if so desired:
-export const pointBreaker = styleSystem(rem(10), rem(15), rem(20), rem(30))
+export const breakPointsOn = styleSystem(rem(10), rem(15), rem(20), rem(30))
 
 // let's create a custom media query adapter using the breakpoints above:
-const bp_4_FontSizer = pointBreaker('font-size')
+const responsiveFonts = breakPointsOn('font-size')
 
 // pushes our css into <head> of document:
 injectStyleSheet(
@@ -57,7 +65,7 @@ injectStyleSheet(
        * **/
       // the first member of a rule is the identifier of the element
       // remaining members are concatenated into a single css string
-      ['.app', { background: bloodOrange }, bc('white'), p('0 0 0 20px')],
+      ['.component', { background: BLOODORANGE }, bc('white'), p('0 0 0 20px')],
       // mix, match and compose objects, functions, and string definitions
       [
         '.btn',
@@ -71,7 +79,7 @@ injectStyleSheet(
         br('10px'),
         bc('white'),
         crs,
-        f('System UI', 300),
+        f('Rubik', 300),
       ],
       // use a media query:
       at_media({ 'screen': true, 'min-width': rem(25) }, [
@@ -81,13 +89,13 @@ injectStyleSheet(
           at_media({ 'min-width': '35rem' }, [
             '.btn',
             { padding: rem(1) },
-            f('System UI', 500, 'italic'),
+            f('Rubik', 500, 'italic'),
           ]),
         ],
       ]),
       // spread in the custom media query adapter we created above:
-      ...bp_4_FontSizer('15px', '25px', '35px', rem(5))('.title'),
-      ['.title', f('System UI', 500, 'italic'), { color: 'white' }],
+      ...responsiveFonts('15px', '25px', '35px', rem(5))('.title'),
+      ['.title', f('Rubik', 800, 'italic'), { color: 'white' }],
     ],
 
     // second argument is an optional configuration
@@ -100,4 +108,4 @@ injectStyleSheet(
   )
 )
 
-start(app(), { root: document.body })
+start(component(), { root: document.body })
