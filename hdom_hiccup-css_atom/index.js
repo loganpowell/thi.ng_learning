@@ -7,7 +7,6 @@ import { greeter, counter } from './components'
 
 import { start } from '@thi.ng/hdom'
 import { css, injectStyleSheet, PRETTY, rem, at_media } from '@thi.ng/hiccup-css'
-import { isObject, isString } from '@thi.ng/checks'
 import { Atom, Cursor, History } from '@thi.ng/atom'
 
 const SCOPE = '_jumbotron_clicker'
@@ -54,7 +53,7 @@ const buttonStyles = [
     ...border('white', '5px'),
     ...crs,
   },
-] //?
+]
 
 const styles = css(
   [
