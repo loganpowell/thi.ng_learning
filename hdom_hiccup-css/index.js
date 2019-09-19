@@ -15,14 +15,14 @@ const scope = '_jumbotron_clicker'
 /** FUNCTIONAL COMPONENTS
  * NOTE: `scope` names can only be appended to class names,
  * not ids or elements, so we terminate our element tag with class names
- * and append our css named scope thereafter
+ * and append our css named scope later
  **/
 const greeter = (_, name) => ['h1#my_id.greeter' + scope, 'hello ', name]
 const counter = (i = 0) => () => ['button.counter' + scope, { onclick: () => i++ }, `clicks: ${i}`]
 const jumbotron = () => ['div.jumbotron' + scope, [greeter, 'thi.ng'], counter()]
 
+// STYLES
 // create some utilities (we'll move these into a util directory later)
-
 // factories
 const border = (color = 'black', radius = '0px', type = 'solid', thickness = '1px') => ({
   'border-radius': radius,

@@ -14,22 +14,21 @@ const SCOPE = '_jumbotron_clicker'
 
 // create an immutable state container and record it
 const atom = new History(new Atom({ count: 0 }))
-
 // create a cursor to the count for read/write access
 const cursor = new Cursor(atom, 'count')
 // let's log our changes to the atom:
 cursor.addWatch('watcher says', (id, prev, curr) => console.log(`${id}: ${prev} -> ${curr}`))
 // create a read-only derived view
 const view = atom.addView('count', x => x / 4)
+
 /**
  * the atom's value can be obtained via deref(),
  * replaced via reset()
  * and updated using swap()
  **/
-const inc = (old, int) => old + int
-
 // Let's use swap; this is the same as: atom.reset(inc(a.deref(), 1))
 const incState = () => cursor.swap(inc, 1)
+const inc = (old, int) => old + int
 // props are passed in via the second element in an hdom array
 const jumbotron = () => [
   'div',
@@ -51,11 +50,11 @@ const buttonStyles = [
     'color': 'white',
     'font-size': rem(1.5),
     'margin': '15px 15px 0 0',
+    ...font('Rubik', 500),
+    ...border('white', '5px'),
+    ...crs,
   },
-  font('Rubik', 500),
-  border('white', '5px'),
-  crs,
-]
+] //?
 
 const styles = css(
   [
