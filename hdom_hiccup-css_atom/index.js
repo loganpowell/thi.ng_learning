@@ -1,5 +1,5 @@
-import './normalize.css' // for codesandbox
-import './index.css' // for codesandbox
+// import './normalize.css' // for codesandbox
+// import './index.css' // for codesandbox
 
 // import our utilities
 import { border, font, orangeScale, crs, padding, breakPointsOn } from './utils/css'
