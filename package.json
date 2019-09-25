@@ -14,7 +14,13 @@
     "@thi.ng/bench": "^1.0.9",
     "@thi.ng/hdom": "^8.0.4",
     "@thi.ng/hiccup-css": "^1.1.4",
-    "@thi.ng/router": "^2.0.4"
+    "@thi.ng/interceptors": "^2.2.1",
+    "@thi.ng/router": "^2.0.4",
+    "@thi.ng/rstream": "^2.5.5",
+    "fetch-progress": "^1.2.0",
+    "isomorphic-fetch": "^2.2.1",
+    "ramda": "^0.26.1",
+    "regenerator-runtime": "^0.13.3"
   },
   "devDependencies": {
     "tachyons": "^4.10.0"

@@ -37,8 +37,6 @@ const jumbotron = () => [
   [counter(), { class: 'counter' + SCOPE, onclick: incState, state: cursor }, 'clicks: '],
   ['button', { class: 'counter' + SCOPE, onclick: () => atom.reset({ count: 0 }) }, 'reset'],
   ['button', { class: 'counter' + SCOPE, onclick: () => atom.undo() }, 'undo'],
-  ['button', { class: 'counter' + SCOPE, onclick: console.log }, 'log'],
-  ['a', { href: 'xxx.xxx', onclick: e => (e.preventDefault(), console.log(e)) }, 'route'],
 ]
 
 const responsiveFonts = breakPointsOn('font-size')
